@@ -11,53 +11,28 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
-   switch (call.method)
-
-   {
-       case @"getPlatformVersion":
-
-            result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-
-            break;
-
-       case @"getIMEI":
-
-            result([@"Not authorized for iOS"]);
-
-            break;
-
-       case @"getSerial":
-
-            let device = UIDevice.current;
-
-             result(device.identifierForVendor?.uuidString);
-
-            break;
-
-       case @"getAndroidID":
-
-            result([@"Not available for iOS"]);
-
-            break;
-
-       default:
-
-            result(FlutterMethodNotImplemented);
-
-            break;
-
-   }
   if ([@"getPlatformVersion" isEqualToString:call.method]) {
     result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+     
   }
-
-
   else {
     if ([@"getIMEI" isEqualToString:call.method]) {
         result([@"Not authorized for iOS"]);
+     }
+      else {
+           if ([@"getSerial" isEqualToString:call.method]) {
+               let device = UIDevice.current;
+               result(device.identifierForVendor?.uuidString);
+          }
+          else {
+               if ([@"getAndroidID" isEqualToString:call.method]) {
+                    result([@"Not compatible with iOS"]);
+               }
+               else {
+                    result(FlutterMethodNotImplemented);
+               }
+          }
       }
-
-    result(FlutterMethodNotImplemented);
   }
 }
 
