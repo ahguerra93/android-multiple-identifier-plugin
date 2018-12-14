@@ -1,8 +1,8 @@
 name: android_multiple_identifier
 description: A new Flutter plugin.
-version: 0.0.1
-author:
-homepage:
+version: 0.1.2
+author: Andres Heredia <ahguerra93@gmail.com>
+homepage: https://flutter.io
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  simple_permissions: ^0.1.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
