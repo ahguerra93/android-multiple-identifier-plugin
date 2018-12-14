@@ -32,6 +32,13 @@ class AndroidMultipleIdentifier {
 
   }
 
+  static Future<Map> get idMap async {
+
+      final Map idMap = await _channel.invokeMethod('getIdMap');
+      return idMap;
+
+  }
+
   static Future<String> requestPermissions() async {
     String result;
     Future<String> futureVersion = platformVersion;

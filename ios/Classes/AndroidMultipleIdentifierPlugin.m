@@ -21,8 +21,7 @@
      }
       else {
            if ([@"getSerial" isEqualToString:call.method]) {
-               let device = UIDevice.current;
-               result(device.identifierForVendor?.uuidString);
+               result(@"TO DO: get identifier for vendor in ObjC");
           }
           else {
                if ([@"getAndroidID" isEqualToString:call.method]) {

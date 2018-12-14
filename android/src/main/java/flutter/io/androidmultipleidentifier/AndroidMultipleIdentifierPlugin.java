@@ -6,6 +6,9 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -30,7 +33,7 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
   }
 
 
-  String getIMEI (Context c) {
+  private String getIMEI (Context c) {
     Log.i(TAG, "ATTEMPTING TO getIMEI: ");
     TelephonyManager telephonyManager;
     telephonyManager = (TelephonyManager) c.getSystemService(c.TELEPHONY_SERVICE);
@@ -46,7 +49,7 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
     return deviceId;
   }
 
-  String getSerial () {
+  private String getSerial () {
     Log.i(TAG, "ATTEMPTING TO getSerial: ");
     String serial = "";
 
@@ -66,7 +69,7 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
     return serial;
   }
 
-  String getAndroidID (Context c) {
+  private String getAndroidID (Context c) {
     Log.i(TAG, "ATTEMPTING TO getAndroidID: ");
     String androidId = "";
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
@@ -76,6 +79,17 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
       }
     }
     return androidId;
+  }
+
+  private Map<String, String> getIdMap (Context c)  {
+    String imei = getIMEI(c);
+    String serial = getSerial();
+    String androidId = getAndroidID(c);
+    Map<String, String> idMap = new HashMap<>();
+    idMap.put("imei",imei);
+    idMap.put("serial", serial);
+    idMap.put("androidId", androidId);
+    return idMap;
   }
 
 
@@ -102,6 +116,11 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
       String androidID = getAndroidID(activity.getBaseContext());
 
       result.success(androidID);
+      return;
+    }
+    if (call.method.equals("getIdMap")) {
+      Map idMap = getIdMap(activity.getBaseContext());
+      result.success(idMap);
       return;
     }
 
