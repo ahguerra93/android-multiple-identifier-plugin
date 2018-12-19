@@ -21,8 +21,16 @@
 ## 0.1.9
 
 * Removed simple_permissions plugin, removed method channels for iOS 
-* It's not compatible with iOS but it doesn-t crash on iOS when added in the pubspec.yaml file
+* It's not compatible with iOS but it doesn't crash on iOS when added in the pubspec.yaml file
 
 ## 0.1.10
 
 * Added functionality to api lower than 26.
+
+## 0.2.0
+
+* updated plugin info
+
+## 0.2.1
+
+* added example
