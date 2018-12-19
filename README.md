@@ -26,7 +26,7 @@ and Info.plist.
 
 Be sure to ask permissions first, otherwise, the app won't be able to get the IMEI code and Serial number:
 ```dart
-await AndroidMultipleIdentifier.requestPermissions();
+await AndroidMultipleIdentifier.requestPermission();
 ```
 Then you can call any of the three available methods:
 ```dart
@@ -37,7 +37,7 @@ String androidID = await AndroidMultipleIdentifier.androidID;
 ### Android Permissions
 You can also use methods for checking status of the permissions:
 ```dart
-await AndroidMultipleIdentifier.requestPermissions();
+await AndroidMultipleIdentifier.requestPermission();
 bool permissionStatus = await AndroidMultipleIdentifier.checkPermission(); // true if the permission is already granted
 bool isPermissionRejected = await AndroidMultipleIdentifier.checkPermissionRationale(); // true if the user previously rejected the app
 ```

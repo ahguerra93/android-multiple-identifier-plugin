@@ -31,6 +31,6 @@
 
 * updated plugin info
 
-## 0.2.1
+## 0.2.1 - 0.2.2
 
-* added example
+* updated and fixed instruccions
