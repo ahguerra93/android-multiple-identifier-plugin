@@ -34,6 +34,16 @@ String imei = await AndroidMultipleIdentifier.imeiCode;
 String serial = await AndroidMultipleIdentifier.serialCode;
 String androidID = await AndroidMultipleIdentifier.androidID;
 ```
+Or call a map contaning the 3 values so you reduce the times you call native android:
+```dart
+Map idMap = Map();
+idMap = await AndroidMultipleIdentifier.idMap;
+
+String imei = idMap["imei"];
+String serial = idMap["serial"];
+String androidID = idMap["androidId"];
+```
+
 ### Android Permissions
 You can also use methods for checking status of the permissions:
 ```dart
@@ -43,5 +53,4 @@ bool isPermissionRejected = await AndroidMultipleIdentifier.checkPermissionRatio
 ```
 
 ### iOS
-
 For now the iOs functionality has been disabled. The app won't crash on iOS if you add it to your `pubspec.yaml` file. 
