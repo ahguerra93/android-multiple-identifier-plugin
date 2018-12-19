@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:flutter/services.dart';
 
 class AndroidMultipleIdentifier {
@@ -39,25 +38,18 @@ class AndroidMultipleIdentifier {
 
   }
 
-  static Future<String> requestPermissions() async {
-    String result;
-    Future<String> futureVersion = platformVersion;
-    return futureVersion.then((version) async{
-      if (version.contains('iOS')) {
-      final res =
-          await SimplePermissions.requestPermission(Permission.ReadPhoneState);
-      result = "permission request result is " + res.toString();
-      print(result);
-    } else {
-      if (int.parse(version[8]) >= 6) {
-        final res = await SimplePermissions.requestPermission(
-            Permission.ReadPhoneState);
-        result = "permission request result is " + res.toString();
-        print(result);
-      }
-    }
+  static Future<bool> requestPermission() async {
+    final bool result = await _channel.invokeMethod('requestPermission');
     return result;
-    });
-    
+  }
+  static Future<bool> checkPermission() async {
+    final bool result = await _channel.invokeMethod('checkPermission');
+    print("Checking permission: $result");
+    return result;
+  }
+  static Future<bool> checkPermissionRationale() async {
+    final bool result = await _channel.invokeMethod('checkPermissionRationale');
+    print("Did the user rejected the permission?: $result");
+    return result;
   }
 }

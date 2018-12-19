@@ -1,6 +1,8 @@
 package flutter.io.androidmultipleidentifier;
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -13,23 +15,29 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.app.ActivityCompat;
 
 import static android.content.ContentValues.TAG;
 
 /** AndroidMultipleIdentifierPlugin */
-public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
+    public class AndroidMultipleIdentifierPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
 
-  private final Activity activity;
+  private Registrar registrar;
+  private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
+  private Result result;
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "android_multiple_identifier");
-    channel.setMethodCallHandler(new AndroidMultipleIdentifierPlugin(registrar.activity()));
-
+    AndroidMultipleIdentifierPlugin plugin = new AndroidMultipleIdentifierPlugin(registrar);
+    channel.setMethodCallHandler(plugin);
+    registrar.addRequestPermissionsResultListener(plugin);
   }
 
-  private AndroidMultipleIdentifierPlugin(Activity activity) {
-    this.activity = activity;
+  private AndroidMultipleIdentifierPlugin(Registrar registrar){      //constructor 1
+      this.registrar = registrar;
   }
 
 
@@ -92,40 +100,129 @@ public class AndroidMultipleIdentifierPlugin implements MethodCallHandler{
     return idMap;
   }
 
+    private boolean checkPermission (Activity thisActivity) {
+        boolean res = false;
+        if (ContextCompat.checkSelfPermission(thisActivity,
+                Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            res = true;
+        }
+        return res;
+    }
+
+    private boolean checkPermissionRationale (Activity thisActivity) {
+        boolean res = false;
+        if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
+                Manifest.permission.READ_PHONE_STATE)) {
+            res = true;
+        }
+        return  res;
+    }
+
+    private void requestPermission (Activity thisActivity) {
+
+        Log.i(TAG, "requestPermission: REQUESTING");
+            ActivityCompat.requestPermissions(thisActivity,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+    }
+
+    private boolean isAPI26Up () {
+      return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    }
 
   @Override
-  public void onMethodCall(MethodCall call, Result result) {
+  public void onMethodCall(MethodCall call, Result res) {
     if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
+      res.success("Android " + android.os.Build.VERSION.RELEASE);
       return;
     }
     if (call.method.equals("getIMEI")) {
-       String imei = getIMEI(activity.getBaseContext());
+       String imei = getIMEI(registrar.activity().getBaseContext());
 
-      result.success(imei);
+      res.success(imei);
       return;
     }
 
     if (call.method.equals("getSerial")) {
       String serial = getSerial();
 
-      result.success(serial);
+      res.success(serial);
       return;
     }
     if (call.method.equals("getAndroidID")) {
-      String androidID = getAndroidID(activity.getBaseContext());
+      String androidID = getAndroidID(registrar.activity().getBaseContext());
 
-      result.success(androidID);
+      res.success(androidID);
       return;
     }
     if (call.method.equals("getIdMap")) {
-      Map idMap = getIdMap(activity.getBaseContext());
-      result.success(idMap);
+      Map idMap = getIdMap(registrar.activity().getBaseContext());
+      res.success(idMap);
       return;
     }
+    if (call.method.equals("checkPermission")) {
 
-    result.notImplemented();
+        boolean response = isAPI26Up()? checkPermission(registrar.activity()) : true;
+        res.success(response);
+        return;
+    }
+    if (call.method.equals("checkPermissionRationale")) {
+        boolean response = isAPI26Up()? checkPermissionRationale(registrar.activity()) : true;
+        res.success(response);
+        return;
+    }
+    if (call.method.equals("requestPermission")) {
+        this.result = res;
+        if (isAPI26Up()) {
+            requestPermission(registrar.activity());
+        }
+        else {
+            res.success(true);
+        }
+        return;
+
+    }
+
+    res.notImplemented();
 
   }
+
+
+
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        boolean status = false;
+        String permission = permissions[0];
+        Log.i(TAG, "requestResponse: INITIALIZED");
+        if (requestCode == 0 && grantResults.length > 0) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(registrar.activity(), permission)) {
+                Log.e("ResquestResponse", "DENIED: " + permission);//allowed//denied
+                status = false;
+            } else {
+                if (ActivityCompat.checkSelfPermission(registrar.context(), permission) == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("ResquestResponse", "ALLOWED: " + permission);//allowed
+                    status = true;
+                }
+                else {
+                    //set to never ask again
+                    Log.e("ResquestResponse", "set to never ask again" + permission);
+                    status = true;
+                }
+            }
+        }
+
+        Result res = this.result;
+        this.result = null;
+        if(res != null) {
+            Log.i(TAG, "onRequestPermissionsResult: Returning result");
+            res.success(status);
+        }
+        else
+        {
+            Log.i(TAG, "onRequestPermissionsResult: NOT Returning result");
+        }
+        return true;
+    }
 
 }

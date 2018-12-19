@@ -9,30 +9,8 @@
   [registrar addMethodCallDelegate:instance channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-     
-  }
-  else {
-    if ([@"getIMEI" isEqualToString:call.method]) {
-        result([@"Not authorized for iOS"]);
-     }
-      else {
-           if ([@"getSerial" isEqualToString:call.method]) {
-               result(@"TO DO: get identifier for vendor in ObjC");
-          }
-          else {
-               if ([@"getAndroidID" isEqualToString:call.method]) {
-                    result([@"Not compatible with iOS"]);
-               }
-               else {
-                    result(FlutterMethodNotImplemented);
-               }
-          }
-      }
-  }
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {  
+     result(FlutterMethodNotImplemented);
 }
 
 @end

@@ -1,6 +1,6 @@
 name: android_multiple_identifier
 description: Exclusive for Android. A plugin that provides multiple Android unique identifiers for you to choose the one that best applies to your needs. 
-version: 0.1.5
+version: 0.1.10
 author: Andres Heredia <ahguerra93@gmail.com>
 homepage: https://flutter.io
 
@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  simple_permissions: ^0.1.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
