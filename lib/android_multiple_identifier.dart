@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class AndroidMultipleIdentifier {
   static const MethodChannel _channel =
       const MethodChannel('android_multiple_identifier');
+  static bool neverAskAgain = false;
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -30,7 +31,6 @@ class AndroidMultipleIdentifier {
       return androidID;
 
   }
-
   static Future<Map> get idMap async {
 
       final Map idMap = await _channel.invokeMethod('getIdMap');
@@ -38,9 +38,20 @@ class AndroidMultipleIdentifier {
 
   }
 
-  static Future<bool> requestPermission() async {
-    final bool result = await _channel.invokeMethod('requestPermission');
+  static Future<Map> requestPermissionMap() async {
+    final Map result = await _channel.invokeMethod('requestPermission');
+    neverAskAgain = result["neverAskAgain"];
     return result;
+  }
+  static Future<bool> requestPermission() async {
+    Map permissionMap = await requestPermissionMap();
+    final bool result = permissionMap["status"];
+    return result;
+  }
+  static bool checkNeverAskAgain() {
+    // Map permissionMap = await requestPermissionMap();
+    // final bool result = permissionMap["neverAskAgain"];
+    return neverAskAgain;
   }
   static Future<bool> checkPermission() async {
     final bool result = await _channel.invokeMethod('checkPermission');

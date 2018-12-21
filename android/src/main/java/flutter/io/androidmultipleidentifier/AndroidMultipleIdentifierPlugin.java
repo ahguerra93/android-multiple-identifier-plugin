@@ -168,7 +168,7 @@ import static android.content.ContentValues.TAG;
         return;
     }
     if (call.method.equals("checkPermissionRationale")) {
-        boolean response = isAPI26Up()? checkPermissionRationale(registrar.activity()) : true;
+        boolean response = isAPI26Up()? checkPermissionRationale(registrar.activity()) : false;
         res.success(response);
         return;
     }
@@ -192,22 +192,25 @@ import static android.content.ContentValues.TAG;
 
     @Override
     public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        boolean status = false;
+        Map<String, Boolean> statusMap = new HashMap<>();
+//        boolean status = false;
+        statusMap.put("status", false);
+        statusMap.put("neverAskAgain", false);
         String permission = permissions[0];
         Log.i(TAG, "requestResponse: INITIALIZED");
         if (requestCode == 0 && grantResults.length > 0) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(registrar.activity(), permission)) {
                 Log.e("ResquestResponse", "DENIED: " + permission);//allowed//denied
-                status = false;
+                statusMap.put("status", false);
             } else {
                 if (ActivityCompat.checkSelfPermission(registrar.context(), permission) == PackageManager.PERMISSION_GRANTED) {
                     Log.e("ResquestResponse", "ALLOWED: " + permission);//allowed
-                    status = true;
+                    statusMap.put("status", true);
                 }
                 else {
                     //set to never ask again
                     Log.e("ResquestResponse", "set to never ask again" + permission);
-                    status = true;
+                    statusMap.put("neverAskAgain", true);
                 }
             }
         }
@@ -216,7 +219,7 @@ import static android.content.ContentValues.TAG;
         this.result = null;
         if(res != null) {
             Log.i(TAG, "onRequestPermissionsResult: Returning result");
-            res.success(status);
+            res.success(statusMap);
         }
         else
         {
