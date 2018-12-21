@@ -37,21 +37,11 @@ class AndroidMultipleIdentifier {
       return idMap;
 
   }
-
-  static Future<Map> requestPermissionMap() async {
-    final Map result = await _channel.invokeMethod('requestPermission');
-    neverAskAgain = result["neverAskAgain"];
-    return result;
-  }
   static Future<bool> requestPermission() async {
-    Map permissionMap = await requestPermissionMap();
+    Map permissionMap = await _channel.invokeMethod('requestPermission');
+    neverAskAgain = permissionMap["neverAskAgain"];
     final bool result = permissionMap["status"];
     return result;
-  }
-  static bool checkNeverAskAgain() {
-    // Map permissionMap = await requestPermissionMap();
-    // final bool result = permissionMap["neverAskAgain"];
-    return neverAskAgain;
   }
   static Future<bool> checkPermission() async {
     final bool result = await _channel.invokeMethod('checkPermission');

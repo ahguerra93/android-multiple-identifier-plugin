@@ -127,8 +127,8 @@ import static android.content.ContentValues.TAG;
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
     }
 
-    private boolean isAPI26Up () {
-      return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    private boolean isAPI23Up () {
+      return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
   @Override
@@ -163,22 +163,25 @@ import static android.content.ContentValues.TAG;
     }
     if (call.method.equals("checkPermission")) {
 
-        boolean response = isAPI26Up()? checkPermission(registrar.activity()) : true;
+        boolean response = isAPI23Up()? checkPermission(registrar.activity()) : true;
         res.success(response);
         return;
     }
     if (call.method.equals("checkPermissionRationale")) {
-        boolean response = isAPI26Up()? checkPermissionRationale(registrar.activity()) : false;
+        boolean response = isAPI23Up()? checkPermissionRationale(registrar.activity()) : false;
         res.success(response);
         return;
     }
     if (call.method.equals("requestPermission")) {
         this.result = res;
-        if (isAPI26Up()) {
+        if (isAPI23Up()) {
             requestPermission(registrar.activity());
         }
         else {
-            res.success(true);
+            Map<String, Boolean> oldAPIStatusMap = new HashMap<>();
+            oldAPIStatusMap.put("status", true);
+            oldAPIStatusMap.put("neverAskAgain", false);
+            res.success(oldAPIStatusMap);
         }
         return;
 
@@ -193,7 +196,6 @@ import static android.content.ContentValues.TAG;
     @Override
     public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Map<String, Boolean> statusMap = new HashMap<>();
-//        boolean status = false;
         statusMap.put("status", false);
         statusMap.put("neverAskAgain", false);
         String permission = permissions[0];
