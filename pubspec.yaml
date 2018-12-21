@@ -1,6 +1,6 @@
 name: android_multiple_identifier
 description: Exclusive for Android. A plugin that provides multiple Android unique identifiers for you to choose the one that best applies to your needs. 
-version: 0.2.4
+version: 0.2.5
 author: Andres Heredia <ahguerra93@gmail.com>
 homepage: https://github.com/ahguerra93/android-multiple-identifier-plugin
 
