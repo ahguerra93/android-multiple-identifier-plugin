@@ -48,11 +48,15 @@ Besides the request permission method:
 ```dart
 await AndroidMultipleIdentifier.requestPermission();
 ```
-You can also use methods for checking status of the permissions:
+You can use methods for checking status of the permissions:
 ```dart
 bool permissionStatus = await AndroidMultipleIdentifier.checkPermission(); // true if the permission is already granted
 bool isPermissionRejected = await AndroidMultipleIdentifier.checkPermissionRationale(); // true if the user previously rejected the app
 bool setToNeverAskAgain = AndroidMultipleIdentifier.neverAskAgain; //true if the user rejected the app and set to never ask again
+```
+For openning settings (and modifiying permissions manually):
+```dart
+AndroidMultipleIdentifier.openSettings();
 ```
 
 ### Check Platform Version

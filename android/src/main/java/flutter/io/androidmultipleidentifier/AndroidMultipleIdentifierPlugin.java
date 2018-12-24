@@ -2,7 +2,9 @@ package flutter.io.androidmultipleidentifier;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -118,6 +120,12 @@ import static android.content.ContentValues.TAG;
         }
         return  res;
     }
+    private Map<String,Boolean> checkPermissionMap(Activity activity) {
+        Map<String, Boolean> resultMap = new HashMap<>();
+        resultMap.put("isGranted", checkPermission(activity));
+        resultMap.put("isRejected", checkPermissionRationale(activity));
+        return  resultMap;
+    }
 
     private void requestPermission (Activity thisActivity) {
 
@@ -130,6 +138,16 @@ import static android.content.ContentValues.TAG;
     private boolean isAPI23Up () {
       return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
+
+    private void openSettings () {
+        Activity activity = registrar.activity();
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + activity.getPackageName()));
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
+    }
+
 
   @Override
   public void onMethodCall(MethodCall call, Result res) {
@@ -161,6 +179,18 @@ import static android.content.ContentValues.TAG;
       res.success(idMap);
       return;
     }
+    if (call.method.equals("checkPermissionMap")) {
+        Map<String, Boolean> response = new HashMap<>();
+        if (isAPI23Up()) {
+            response = checkPermissionMap(registrar.activity());
+        }
+        else {
+            response.put("isGranted", true);
+            response.put("isRejected", false);
+        }
+        res.success(response);
+        return;
+    }
     if (call.method.equals("checkPermission")) {
 
         boolean response = isAPI23Up()? checkPermission(registrar.activity()) : true;
@@ -186,10 +216,17 @@ import static android.content.ContentValues.TAG;
         return;
 
     }
+    if (call.method.equals("openSettings")) {
+
+//        result.success(true);
+        openSettings();
+        return;
+    }
 
     res.notImplemented();
 
   }
+
 
 
 

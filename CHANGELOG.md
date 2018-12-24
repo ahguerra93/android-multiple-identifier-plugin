@@ -1,3 +1,8 @@
+## 0.2.6
+
+* Added a method for opening the application settings screen.
+
+
 ## 0.2.5 
 
 * Added a method for checking if the user check the "never ask again" box on permission request
