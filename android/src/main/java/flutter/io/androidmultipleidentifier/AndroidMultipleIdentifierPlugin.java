@@ -133,6 +133,10 @@ import static android.content.ContentValues.TAG;
             ActivityCompat.requestPermissions(thisActivity,
                     new String[]{Manifest.permission.READ_PHONE_STATE},
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+
+
+
+
     }
 
     private boolean isAPI23Up () {
@@ -263,6 +267,7 @@ import static android.content.ContentValues.TAG;
         else
         {
             Log.i(TAG, "onRequestPermissionsResult: NOT Returning result");
+            return false;
         }
         return true;
     }
