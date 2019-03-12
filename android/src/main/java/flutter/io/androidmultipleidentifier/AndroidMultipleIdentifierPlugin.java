@@ -19,8 +19,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 
 import static android.content.ContentValues.TAG;
 
