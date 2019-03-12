@@ -29,6 +29,16 @@ android {
     }
     productFlavors {
     }
+    defaultConfig{
+        configurations.all {
+            resolutionStrategy {
+                force 'androidx.core:core:1.0.1'
+                force 'androidx.vectordrawable:vectordrawable:1.0.1'
+                force 'androidx.appcompat:appcompat:1.0.2'
+
+            }
+        }
+    }
 }
 
 dependencies {
